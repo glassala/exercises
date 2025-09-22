@@ -1,3 +1,3 @@
 # exercises
 
-Lean exercises of varied sorts.
+Assorted Lean exercises.
