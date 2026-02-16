@@ -2,10 +2,12 @@ import Mathlib.Tactic
 set_option linter.style.docString false
 section Lists
 /-
-    Notation in the form [a, b, c] is fairly tightly
-    connected to Lean's native List type, so we will use
-    {a, b, c} and suspend our disbelief at this notation
-    signifying an *ordered* collection.
+
+    Linked list and friends. Adapted from a Haskell
+    implementation of same from around November 2024.
+
+    -- Will Sweet
+
 -/
 variable {α β γ : Type*}
 universe u
@@ -285,8 +287,6 @@ def filter : (α -> Bool) -> L α -> L α :=
                     | _ => filter P xs
 /--
     26.
-
-    Filter 2, now featuring dependent types.
 -/
 def subtypeFilter (P : α -> Prop) [DecidablePred P] : L α -> L {x // P x}
     | nil =>
@@ -299,7 +299,11 @@ def subtypeFilter (P : α -> Prop) [DecidablePred P] : L α -> L {x // P x}
 end L
 end Lists
 /-
-    Dependent Vec type. Acts as a list bundled with its length.
+
+
+    List bundled with its length.
+
+
 -/
 section Vector
 universe u
@@ -352,3 +356,92 @@ def append {n m : ℕ} : Vec α n -> Vec α m -> Vec α (n + m) :=
                         apply cons (k + m) a (append as ys)
 end Vec
 end Vector
+/-
+
+
+    Maybe monad.
+
+
+-/
+universe u
+variable {α β : Type u}
+inductive Maybe α where
+    | none : Maybe α
+    | some : α -> Maybe α
+namespace Maybe
+instance : Functor Maybe where
+    map :=
+        fun f m =>
+            match m with
+                | none => none
+                | some x => some (f x)
+def seq : Maybe (α -> β) -> (Unit -> Maybe α) -> Maybe β :=
+    fun m : Maybe (α -> β) =>
+        fun h : Unit -> Maybe α =>
+            match m with
+                | none => none
+                | some f =>
+                    match h () with
+                        | none => none
+                        | some x => some (f x)
+instance : Applicative Maybe where
+    pure := fun x => some x
+    seq := seq
+def bind : Maybe α → (α → Maybe β) → Maybe β :=
+    fun m f =>
+        match m with
+            | none => none
+            | some x => f x
+instance : Monad Maybe where
+    bind := bind
+instance : LawfulFunctor Maybe where
+    map_const := by
+        intro a b
+        funext x m
+        simp [Functor.mapConst, Function.comp]
+        rfl
+    id_map := by
+        intro a b
+        cases b
+        case none =>
+            rfl
+        case some x =>
+            rfl
+    comp_map := by
+        intro _ _ _ _ _ m
+        cases m
+        case none =>
+            rfl
+        case some x =>
+            rfl
+instance : LawfulApplicative Maybe where
+    seqLeft_eq := by
+        intro _ _ x y ; cases x <;> cases y <;> rfl
+    seqRight_eq := by
+        intro _ _ x y ; cases x <;> cases y <;> rfl
+    pure_seq := by
+        intro _ _ _ m ; cases m <;> rfl
+    map_pure := by
+        intro _ _ _ _ ; rfl
+    seq_pure := by
+        intro _ _ m _ ; cases m <;> rfl
+    seq_assoc := by
+        intro _ _ _ m n
+        cases m <;> cases n <;> intro m' <;> cases m' <;> rfl
+/--
+    Definitely monad.
+-/
+instance : LawfulMonad Maybe where
+    bind_pure_comp := by
+        intro _ _ _ _
+        rfl
+    bind_map := by
+        intro _ _ f m
+        cases f <;> cases m <;> rfl
+    bind_assoc := by
+        intro a b c m f g
+        cases m <;> rfl
+    pure_bind := by
+        intro a b x f
+        rfl
+end Maybe

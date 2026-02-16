@@ -6,9 +6,15 @@ set_option linter.unusedSectionVars false
 set_option linter.unusedVariables false
 set_option linter.style.docString false
 set_option linter.style.multiGoal false
-
 /-
-    Part 1 : "2"
+
+    A naive exploration of boolean algebras in Lean, dated to around
+    February 2025. There are many choices I made then which I would not
+    make now, but, writing this in February 2026, I have largely kept
+    this file as it was as I wrote it in order to keep a record of my progress.
+
+    - Will Sweet
+
 -/
 
 instance plus : Add (Bool) where add x y := xor x y -- + is XOR.

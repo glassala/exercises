@@ -3,9 +3,10 @@ set_option linter.style.docString false
 set_option linter.style.openClassical false
 /-
 
-    Exercises from chapters 3-5 of Theorem Proving in Lean.
+    A collection of exercises from chapters 3-5 in
+    *Theorem Proving in Lean 4.* Dated to around July 2025.
 
-    Variants with and without tactics.
+    -- Will Sweet
 
 -/
 section Propositions

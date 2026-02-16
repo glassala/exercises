@@ -1,7 +1,13 @@
 import Mathlib.Tactic
 set_option linter.style.docString false
 /-
-    Miniature replica of the natural numbers.
+
+    Miniature replica of the natural numbers. Dated to around
+    July-August 2025; conceived as a response to an exercise in
+    *Theorem Proving in Lean 4* which was taken to the extreme.
+
+    -- Will Sweet
+
 -/
 section NaturalNumbers
 inductive N where
@@ -270,14 +276,14 @@ theorem mul_comm (a b : N) : a * b = b * a := by
         simp only [instMul, zero_mul, mul_zero]
     case s a ih =>
         calc a.s * b
-        _ = a * b + b := by
-            rw [s_mul]
-        _ = b * a + b := by
-            rw [ih]
-        _ = b * a.s := by
-            have c : b * a.s = b * a + b := by
-                simp_all
-            rw [c]
+          _ = a * b + b := by
+              rw [s_mul]
+          _ = b * a + b := by
+              rw [ih]
+          _ = b * a.s := by
+              have c : b * a.s = b * a + b := by
+                  simp_all
+              rw [c]
 /--
     21.
 -/
@@ -287,13 +293,13 @@ theorem mul_dist_add (a b c : N) : a * (b + c) = a * b + a * c := by
     case zero => rfl
     case s a ih =>
         calc a.s * (b + c)
-        _ = (a * (b + c)) + (b + c) := by simp
-        _ = a * b + a * c + b + c := by
-            simp_all only [add_assoc]
-        _ = a * b + b + a * c + c := by
-            simp only [instMul, mul_comm, add_comm, add_assoc]
-        _ = a.s * b + a.s * c := by
-            simp_all only [s_mul a, add_assoc]
+          _ = (a * (b + c)) + (b + c) := by simp
+          _ = a * b + a * c + b + c := by
+              simp_all only [add_assoc]
+          _ = a * b + b + a * c + c := by
+              simp only [instMul, mul_comm, add_comm, add_assoc]
+          _ = a.s * b + a.s * c := by
+              simp_all only [s_mul a, add_assoc]
 /--
     22.
 -/
