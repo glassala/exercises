@@ -36,7 +36,7 @@ instance : Repr N where
     reprPrec n _ := repr (n.toLit)
 /-
 
-    (+)
+    (+) (¬∃n : N, s(n) = 0) ∧ (∀ n m : N, s(n) = s(m) -> n = m)
 
 -/
 @[simp]
@@ -158,15 +158,15 @@ theorem add_one (n : N) : n.s = n + zero.s := by
             zero_add
         ]
 /--
-    10.
+    10. ∧
 -/
 @[simp]
 def nsmul : ℕ -> N -> N :=
     fun k : ℕ =>
-            fun n : N =>
-                match k with
-                    | 0 => zero
-                    | k' + 1 => n + (nsmul k' n)
+        fun n : N =>
+            match k with
+                | 0 => zero
+                | k' + 1 => n + (nsmul k' n)
 /--
     11.
 -/
@@ -319,7 +319,7 @@ instance : Monoid N where
     mul_assoc := mul_assoc
 /-
 
-    (^)
+    (^) ∉ ∀ ∃ ≡ × ≠ ∅
 
 -/
 def pow : N -> N -> N :=

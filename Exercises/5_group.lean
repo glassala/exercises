@@ -13,8 +13,7 @@ set_option linter.style.multiGoal false
 
     An exercise in creating a custom implementation of groups
     to strengthen my knowledge of and intuition for groups (and Lean).
-    Does not follow the Mathlib style because Mathlib already
-    has groups and as such has no need of mine. From around December 2025.
+    From around December 2025.
 
     -- Will Sweet
 
@@ -344,7 +343,6 @@ instance Sym (T : Type*) : Group (Permutation T) where
         intro f ; ext g
         change (f.inv ∘ f.map) g = id g
         rw [f.left_inv]
-end Group
 /-
 
 
@@ -494,21 +492,19 @@ instance Center (G : Type*) [Group G] : NormalSubgroup G where
             _ = b := by rw [Group.left_inv, Group.left_id]
         rw [<- Group.assoc, Group.right_inv, Group.right_id]
     normal := by
-        intro a ha x
-        --specialize ha x
-        intro b
+        intro a ha x b
         have : a * b = b * a := by specialize ha b ; exact ha
         have h : a * x = x * a := by specialize ha x ; exact ha
         apply Eq.symm
         rw [<- h]
         have h1 : b * (a * x * x⁻¹) = b * a := by
             calc
-                b * (a * x * x⁻¹) = b * a * (x * x⁻¹) := by repeat rw [Group.assoc]
-                _ = b * a := by rw [Group.right_inv, Group.right_id]
+                b * (a * x * x⁻¹) = b * a * (x * x⁻¹) := by repeat rw [assoc]
+                _ = b * a := by rw [right_inv, right_id]
         have h2 : a * x * x⁻¹ * b = a * b := by
             calc
-                 a * x * x⁻¹ * b = a * (x * x⁻¹) * b  := by rw [Group.assoc]
-                 _ = a * b := by rw [Group.right_inv, Group.right_id]
+                 a * x * x⁻¹ * b = a * (x * x⁻¹) * b  := by rw [assoc]
+                 _ = a * b := by rw [right_inv, right_id]
         rw [h1, h2, this]
 /--
     2.4. The intersection of two subgroups is a subgroup.
@@ -558,7 +554,7 @@ instance Normalizer (G : Type u) [Group G] (S : Set G) : Subgroup G where
         case h.mp =>
             intro ha
             choose x hx using ha
-            rw [Group.left_id, Group.inv_one, Group.right_id] at hx
+            rw [left_id, inv_one, right_id] at hx
             grind
         case h.mpr =>
             intro ha
@@ -568,9 +564,9 @@ instance Normalizer (G : Type u) [Group G] (S : Set G) : Subgroup G where
             case h.refine_2 =>
                 apply Eq.symm
                 calc
-                    1 * a * 1⁻¹ = a * 1⁻¹ := by rw [Group.left_id]
-                    _ = a * 1 := by rw [Group.inv_one]
-                    _ = a := by rw [Group.right_id]
+                    1 * a * 1⁻¹ = a * 1⁻¹ := by rw [left_id]
+                    _ = a * 1 := by rw [inv_one]
+                    _ = a := by rw [right_id]
     is_closed := by
         intro a b ha hb
         change ConjSet a S = S at ha
@@ -774,9 +770,7 @@ instance Transitive
 /--
     2.9. The subset product of a subgroup and normal subgroup of G is a subgroup of G.
 -/
-def SubsetProduct (G : Type u) [Group G] (H K : Set G) : Set G :=
-    fun a => ∃ h ∈ H, ∃ k ∈ K, a = h * k
-instance DiamondFacet
+instance DiamondOne
     (G : Type u) [Group G] (H : Subgroup G) (K : NormalSubgroup G) :
         Subgroup G where
             carrier := fun a => ∃ h ∈ H, ∃ k ∈ K, a = h * k
@@ -853,10 +847,10 @@ end Subgroup
 
 -/
 structure GroupHom (G H : Type*) [Group G] [Group H] where
-    map : G → H
+    map : G -> H
     map_mul' : ∀ a b : G, map (a * b) = map a * map b
 structure GroupIso (G H : Type*) [Group G] [Group H] extends GroupHom G H where
-    inv : H → G
+    inv : H -> G
     left_inv' : inv ∘ map = id
     right_inv' : map ∘ inv = id
 instance (G H : Type*) [Group G] [Group H] : FunLike (GroupHom G H) G H where
@@ -1231,7 +1225,7 @@ instance inducement (G : Type u) [Group G] (K : NormalSubgroup G) :
         refl := by
             intro x
             unfold induce
-            rw [Group.left_inv]
+            rw [left_inv]
             exact Subgroup.has_one _
         symm := by
             intro x y
@@ -1935,7 +1929,7 @@ instance ConjAct (G : Type u) [Group G] : LeftAction G G where
     has_one := by
         intro x
         simp_all
-        rw [Group.left_id, Group.inv_one, Group.right_id]
+        rw [left_id, inv_one, Group.right_id]
     compatible := by
         intro a b x
         simp_all
@@ -2027,6 +2021,7 @@ instance MulPerm (G : Type u) [Group G] (a : G) : Permutation G where
         simp_all
         rw [Group.assoc, Group.right_inv, Group.left_id]
 /--
+
     6.7. Homomorphism from a group into the symmetric group on its underlying set.
 
     While not directly using the group action structure, the idea of a
@@ -2040,7 +2035,6 @@ instance MulPerm (G : Type u) [Group G] (a : G) : Permutation G where
 
     Because of the group action properties, then, we have the view of a
     group action as a function (homomorphism, even) α : G -> Sym(X).
-
 
 -/
 instance PermRep (G : Type u) [Group G] : GroupHom G (Permutation G) where
@@ -2075,5 +2069,7 @@ theorem cayley (G : Type u) [Group G] : Function.Injective (PermRep G) := by
     simp_all only [Permutation.mk.injEq]
     obtain ⟨left, right⟩ := hab
     have h := congrFun left 1
-    rw [Group.right_id, Group.right_id] at h
+    rw [right_id, right_id] at h
     exact h
+
+end Group
