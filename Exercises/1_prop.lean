@@ -1,6 +1,3 @@
-import Mathlib.Tactic
-set_option linter.style.docString false
-set_option linter.style.openClassical false
 /-
 
     A collection of exercises from chapters 3-5 in
@@ -12,15 +9,6 @@ set_option linter.style.openClassical false
 section Propositions
 variable (P Q R : Prop)
 
-/--
-    1. Commutativity of the ∧ operator.
-
-    For goals in the "if and only if" form A ↔ B,
-    use "apply Iff.intro" to split the goal into
-    a "case mp => ⊢ A → B" and a "case mpr => ⊢ B → A."
-
-    Note that "And.intro ha hb" is equivalent to "⟨ha, hb⟩."
--/
 example : P ∧ Q ↔ Q ∧ P := Iff.intro
     (
         fun a : P ∧ Q =>
@@ -37,9 +25,6 @@ example : P ∧ Q ↔ Q ∧ P := by -- exact And.comm
     case mpr =>
         intro (b : Q ∧ P)
         exact ⟨And.right b, And.left b⟩
-/--
-    2. Commutativity of the ∨ operator.
--/
 example : P ∨ Q ↔ Q ∨ P := Iff.intro
     (
         fun u : P ∨ Q =>
@@ -76,9 +61,6 @@ example : P ∨ Q ↔ Q ∨ P := by -- apply Or.comm
                 | Or.inr (p : P) =>
                     Or.inl p
         exact v
-/--
-    3. Associativity of the ∧ operator.
--/
 example : (P ∧ Q) ∧ R ↔ P ∧ (Q ∧ R) := Iff.intro
     (
         fun a : (P ∧ Q) ∧ R =>
@@ -105,9 +87,6 @@ example : (P ∧ Q) ∧ R ↔ P ∧ (Q ∧ R) := by
         have a : Q ∧ R :=
             And.right h
         exact ⟨⟨And.left h, And.left a⟩, And.right a⟩
-/--
-    4. Associativity of ∨.
--/
 example : (P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R) := Iff.intro
     (
         fun u : (P ∨ Q) ∨ R =>
@@ -161,9 +140,6 @@ example : (P ∨ Q) ∨ R ↔ P ∨ (Q ∨ R) := by
                         | Or.inr (r : R) =>
                             Or.inr r
         exact u
-/--
-    5. Distributivity of ∧ over ∨.
--/
 example : P ∧ (Q ∨ R) ↔ (P ∧ Q) ∨ (P ∧ R) := Iff.intro
     (
         fun a : P ∧ (Q ∨ R) =>
@@ -199,9 +175,6 @@ example : P ∧ (Q ∨ R) ↔ (P ∧ Q) ∨ (P ∧ R) := by
                 exact ⟨And.left a, Or.inl (And.right a)⟩
             | Or.inr (a : P ∧ R) =>
                 exact ⟨And.left a, Or.inr (And.right a)⟩
-/--
-    6. Distributivity of ∨ over ∧.
--/
 example : P ∨ (Q ∧ R) ↔ (P ∨ Q) ∧ (P ∨ R) := Iff.intro
     (
         fun u : P ∨ Q ∧ R =>
@@ -242,9 +215,6 @@ example : P ∨ (Q ∧ R) ↔ (P ∨ Q) ∧ (P ∨ R) := by
                         apply Or.inl p
                     | Or.inr (r : R) =>
                         apply Or.inr ⟨q, r⟩
-/--
-    7.
--/
 example : (P → Q → R) ↔ P ∧ Q → R := Iff.intro
     (
         fun f : P → Q → R =>
@@ -258,9 +228,6 @@ example : (P → Q → R) ↔ P ∧ Q → R := Iff.intro
     )
 example : (P → Q → R) ↔ P ∧ Q → R := by
     simp only [and_imp] -- a ∧ b → c ↔ a → b → c
-/--
-    8.
--/
 example : (P ∨ Q) → R ↔ (P → R) ∧ (Q → R) := Iff.intro
     (
         fun f : P ∨ Q → R =>
@@ -299,9 +266,6 @@ example : (P ∨ Q) → R ↔ (P → R) ∧ (Q → R) := by
                 apply And.left h p
             | Or.inr (q : Q) =>
                 apply And.right h q
-/--
-    9.
--/
 example : ¬(P ∨ Q) ↔ ¬P ∧ ¬Q := Iff.intro
     (
         fun n : ¬(P ∨ Q) =>
@@ -322,9 +286,6 @@ example : ¬(P ∨ Q) ↔ ¬P ∧ ¬Q := Iff.intro
     )
 example : ¬(P ∨ Q) ↔ ¬P ∧ ¬Q := by
     simp only [not_or] -- ¬(p ∨ q) ↔ ¬p ∧ ¬q
-/--
-    10.
--/
 example : ¬P ∨ ¬Q → ¬(P ∧ Q) :=
     fun u : ¬P ∨ ¬Q =>
         fun a : P ∧ Q =>
@@ -342,13 +303,6 @@ example : ¬P ∨ ¬Q → ¬(P ∧ Q) := by
         | Or.inr (nq : ¬Q) =>
             intro (a : P ∧ Q)
             apply nq a.right
-/--
-    11. Not (P and not P).
-
-    Note that "a.right a.left" works and "a.left a.right" doesn't work,
-    because the mechanism of proof is to use the fact that ¬P : P → False
-    and apply ¬P to P to solve ⊢ False.
--/
 example : ¬(P ∧ ¬P) :=
     fun a : P ∧ ¬P =>
         a.right a.left
@@ -357,15 +311,6 @@ example : ¬(P ∧ ¬P) := by
         and_not_self, -- ¬(a ∧ ¬a)
         not_false_eq_true -- (¬False) = True
     ]
-/--
-    12.
-
-    The methodology behind this form of proof of negation is as follows.
-    You have a "contradiction" function ¬P : P → Trash which throws a
-    term of type P into the trash, and your goal is to construct
-    such a term of P so that you can use this function to throw the term
-    into the trash.
--/
 example : P ∧ ¬Q → ¬(P → Q) :=
     fun a : P ∧ ¬Q =>
         fun f : P → Q =>
@@ -375,9 +320,6 @@ example : P ∧ ¬Q → ¬(P → Q) := by
         Classical.not_imp, -- ¬(a → b) ↔ a ∧ ¬b
         imp_self -- a → a ↔ True
     ]
-/-
-    13.
--/
 example : ¬P → (P → Q) :=
     fun n : ¬P =>
         fun p : P =>
@@ -385,9 +327,6 @@ example : ¬P → (P → Q) :=
 example : ¬P → (P → Q) := by
     intro (np : ¬P) (p : P)
     simp_all only [not_true_eq_false] -- (¬True) = False
-/--
-    14.
--/
 example : (¬P ∨ Q) → (P → Q) :=
     fun u : ¬P ∨ Q =>
         fun p : P =>
@@ -400,9 +339,6 @@ example : (¬P ∨ Q) → (P → Q) := by
         not_true_eq_false, -- (¬True) = False
         false_or -- (False ∨ p) = p
     ]
-/--
-    15.
--/
 example : P ∨ False ↔ P :=
     Iff.intro (
         fun u : P ∨ False =>
@@ -417,9 +353,6 @@ example : P ∨ False ↔ P :=
     )
 example : P ∨ False ↔ P := by
     simp only [or_false] -- (p ∨ False) = p
-/--
-    16.
--/
 example : P ∧ False ↔ False := Iff.intro
     (
         fun h : P ∧ False =>
@@ -431,9 +364,6 @@ example : P ∧ False ↔ False := Iff.intro
     )
 example : P ∧ False ↔ False := by
     simp only [and_false] -- (p ∧ False) = False
-/--
-    17.
--/
 example : (P → Q) → (¬Q → ¬P) :=
     fun f : P → Q =>
         fun n : ¬Q =>
@@ -445,15 +375,7 @@ example : (P → Q) → (¬Q → ¬P) := by
         imp_false, -- a → False ↔ ¬a
         not_false_eq_true -- (¬False) = True
     ]
-/--
-    18. The law of the excluded middle.
-
-    Assumed in classical logic, but not in constructive logic.
--/
 example : P ∨ ¬P := Classical.em P
-/--
-    19.
--/
 example : (P → Q ∨ R) → ((P → Q) ∨ (P → R)) :=
     fun f : P → Q ∨ R =>
         match Classical.em P with
@@ -475,13 +397,7 @@ example : (P → Q ∨ R) → ((P → Q) ∨ (P → R)) := by
                 | Or.inr (r : R) =>
                     apply Or.inr (fun _ => r)
         | Or.inr (n : ¬P) =>
-            simp_all only [
-                IsEmpty.forall_iff, -- [IsEmpty α] : (∀ (a : α), p a) ↔ True
-                or_self -- (p ∨ p) = p
-            ]
-/--
-    20.
--/
+            simp_all
 example : ¬(P ∧ Q) → ¬P ∨ ¬Q :=
     fun f : ¬(P ∧ Q) =>
         match Classical.em P with
@@ -498,9 +414,6 @@ example : ¬(P ∧ Q) → ¬P ∨ ¬Q := by
         | Or.inr (n : ¬P) =>
                 intro (f : P → ¬Q)
                 apply Or.inl n
-/--
-    21.
--/
 example : ¬(P → Q) → P ∧ ¬Q :=
     fun f : ¬(P → Q) =>
         match Classical.em P with
@@ -513,9 +426,6 @@ example : ¬(P → Q) → P ∧ ¬Q := by
         Classical.not_imp, -- ¬(a → b) ↔ a ∧ ¬b
         imp_self -- a → a ↔ True
     ]
-/--
-    22.
--/
 example : (P → Q) → (¬P ∨ Q) :=
     fun f : P → Q =>
         match Classical.em P with
@@ -530,9 +440,6 @@ example : (P → Q) → (¬P ∨ Q) := by
             apply Or.inr (f p)
         | Or.inr (np : ¬P) =>
             apply Or.inl np
-/--
-    23.
--/
 example : (¬Q → ¬P) → (P → Q) :=
     fun f : ¬Q → ¬P =>
         fun p : P =>
@@ -543,14 +450,7 @@ example : (¬Q → ¬P) → (P → Q) :=
                     absurd p (f nq)
 example : (¬Q → ¬P) → (P → Q) := by
     intro (f : ¬Q → ¬P)  (p : P)
-    simp_all only [
-        not_true_eq_false,
-        imp_false,
-        not_not
-    ]
-/--
-    24.
--/
+    simp_all
 example : ((P → Q) → P) → P :=
     fun h =>
         match Classical.em P with
@@ -564,13 +464,7 @@ example : (((P → Q) → P) → P) := by
         | Or.inl (p : P) =>
             exact p
         | Or.inr (n : ¬P) =>
-            simp_all only [
-                IsEmpty.forall_iff,
-                imp_false, not_true_eq_false
-            ]
-/--
-    25.
--/
+            simp_all
 example : ¬(P ↔ ¬P) :=
     fun ⟨(f : P → ¬P), (n : ¬P → P)⟩ =>
         (fun p : P => f p p) (n (fun p : P => f p p))
@@ -578,37 +472,21 @@ end Propositions
 section Quantifiers
 variable (α : Type) (P Q : α → Prop)
 variable (R : Prop)
-/--
-    26.
--/
+
 example : (∃ _ : α, R) → R :=
     fun a : ∃ _, R =>
         match a with
             | ⟨_, r⟩ =>
                 r
 example : (∃ _ : α, R) → R := by
-    simp only [
-        exists_const_iff, -- (∃ x, P) ↔ Nonempty α ∧ P
-        and_imp, -- a ∧ b → c ↔ a → b → c
-        imp_self, -- a → a ↔ True
-        implies_true -- (∀ (a : α), True) = True
-    ]
-/--
-    27.
--/
+    simp
 example (a : α) : R → (∃ _ : α, R) :=
     fun r =>
         ⟨a, r⟩
 example (a : α) : R → (∃ _ : α, R) := by
-    intro (_ : R)
-    simp_all only [
-        exists_const_iff, -- (∃ x, P) ↔ Nonempty α ∧ P
-        and_true -- (p ∧ True) = p
-    ]
-    exact Nonempty.intro a
-/--
-    28.
--/
+    intro _
+    simp_all
+    exact ⟨a, True.intro⟩
 example : (∃ x, P x ∧ R) ↔ (∃ x, P x) ∧ R := Iff.intro
     (
         fun a : ∃ x, P x ∧ R =>
@@ -626,9 +504,6 @@ example : (∃ x, P x ∧ R) ↔ (∃ x, P x) ∧ R := by
     simp only [
         exists_and_right -- (∃ x, p x ∧ b) ↔ (∃ x, p x) ∧ b
     ]
-/--
-    29.
--/
 example : (∃ x, P x ∨ Q x) ↔ (∃ x, P x) ∨ (∃ x, Q x) := Iff.intro
     (
         fun a : ∃ x, P x ∨ Q x =>
@@ -648,10 +523,26 @@ example : (∃ x, P x ∨ Q x) ↔ (∃ x, P x) ∨ (∃ x, Q x) := Iff.intro
                     ⟨x, Or.inr q⟩
     )
 example : (∃ x, P x ∨ Q x) ↔ (∃ x, P x) ∨ (∃ x, Q x) := by
-    aesop -- Try "aesop?"
-/--
-    30.
--/
+    apply Iff.intro
+    case mp =>
+        intro h
+        obtain ⟨x, hx⟩ := h
+        cases hx
+        case inl hx =>
+            left
+            exact ⟨x, hx⟩
+        case inr hx =>
+            right
+            exact ⟨x, hx⟩
+    case mpr =>
+        intro h
+        cases h
+        case inl hx =>
+            obtain ⟨x, hx⟩ := hx
+            exact ⟨x, Or.inl hx⟩
+        case inr hx =>
+            obtain ⟨x, hx⟩ := hx
+            exact ⟨x, Or.inr hx⟩
 example : (∀ x, P x) ↔ ¬(∃ x, ¬ P x) := Iff.intro
     (
         fun f : ∀ (x : α), P x =>
@@ -667,14 +558,6 @@ example : (∀ x, P x) ↔ ¬(∃ x, ¬ P x) := Iff.intro
                         a ⟨x, n⟩
                 )
     )
-example : (∀ x, P x) ↔ ¬(∃ x, ¬P x) := by
-    simp only [
-        not_exists, -- (¬∃ x, p x) ↔ ∀ (x : α), ¬p x
-        not_not -- ¬¬a ↔ a
-    ]
-/--
-    31.
--/
 example : (∃ x, P x) ↔ ¬(∀ x, ¬ P x) := Iff.intro
     (
         fun a : ∃ x, P x =>
@@ -695,13 +578,7 @@ example : (∃ x, P x) ↔ ¬(∀ x, ¬ P x) := Iff.intro
                     False.elim (f h')
     )
 example : (∃ x, P x) ↔ ¬(∀ x, ¬P x) := by
-    simp only [
-        not_forall, -- (¬∀ (x : α), p x) ↔ ∃ x, ¬p x
-        not_not -- ¬¬a ↔ a
-    ]
-/--
-    32.
--/
+    simp
 example : (¬∃ x, P x) ↔ ∀ x, ¬P x := Iff.intro (
     fun a : ¬∃ x, P x =>
         fun x : α =>
@@ -722,9 +599,6 @@ example : (¬∃ x, P x) ↔ (∀ x, ¬P x) := by
     simp only [
         not_exists -- (¬∃ x, p x) ↔ ∀ (x : α), ¬p x
     ]
-/--
-    33.
--/
 example : (¬∀ x, P x) ↔ (∃ x, ¬P x) := Iff.intro
     (
         fun n =>
@@ -746,12 +620,7 @@ example : (¬∀ x, P x) ↔ (∃ x, ¬P x) := Iff.intro
                         absurd (f x) n'
     )
 example : (¬ ∀ x, P x) ↔ (∃ x, ¬P x) := by
-    simp only [
-        not_forall -- (¬∀ (x : α), p x) ↔ ∃ x, ¬p x
-    ]
-/--
-    34.
--/
+    simp
 example : (∀ x, P x → R) ↔ (∃ x, P x) → R := Iff.intro
     (
         fun f :  ∀ (x : α), P x → R =>
@@ -769,9 +638,6 @@ example : (∀ x, P x → R) ↔ (∃ x, P x) → R := by
     simp only [
         forall_exists_index
     ]
-/--
-    35.
--/
 example (a : α) : (∃ x, P x → R) ↔ (∀ x, P x) → R := Iff.intro
     (
         fun a : ∃ x, P x → R =>
@@ -792,31 +658,19 @@ example (a : α) : (∃ x, P x → R) ↔ (∀ x, P x) → R := by
     apply Iff.intro
     case mp =>
         intro (f : ∃ x, P x → R) (g : ∀ (x : α), P x)
-        simp_all only [
-            forall_const, -- (∀ (a : α), b) ↔ b
-            exists_const_iff -- (∃ x, P) ↔ Nonempty α ∧ P
-        ]
+        simp_all
+        obtain ⟨_, hr⟩ := f
+        exact hr
     case mpr =>
         intro (f : (∀ (x : α), P x) → R)
         match Classical.em (∀ (x : α), P x) with
             | Or.inl (p : ∀ (x : α), P x) =>
-                simp_all only [
-                    implies_true, -- (∀ (a : α), True) = True
-                    forall_const, -- (∀ (a : α), b) ↔ b
-                    exists_const_iff, -- (∃ x, P) ↔ Nonempty α ∧ P
-                    and_true -- (p ∧ True) = p
-                ]
-                apply Nonempty.intro a
+                simp_all
+                exact ⟨a, True.intro⟩
             | Or.inr (np : ¬∀ (x : α), P x) =>
-                simp_all only [
-                    IsEmpty.forall_iff, -- [IsEmpty α] : (∀ (a : α), p a) ↔ True
-                    not_forall -- (¬∀ (x : α), p x) ↔ ∃ x, ¬p x
-                ]
+                simp_all
                 obtain ⟨w, h⟩ := np
                 exact ⟨w, fun p : P w => absurd p h⟩
-/--
-    36.
--/
 example (a : α) : (∃ x, R → P x) ↔ (R → ∃ x, P x) := Iff.intro
     (
         fun a : ∃ x, R → P x =>
@@ -846,15 +700,8 @@ example (a : α) : (∃ x, R → P x) ↔ (R → ∃ x, P x) := by
                     | ⟨x, p⟩ =>
                         exact ⟨x, fun _ => p⟩
             | Or.inr (nr : ¬R) =>
-                simp_all only [
-                    IsEmpty.forall_iff, -- [IsEmpty α] : (∀ (a : α), p a) ↔ True
-                    exists_const_iff, -- (∃ x, P) ↔ Nonempty α ∧ P)
-                    and_true -- (p ∧ True) = p
-                ]
-                exact Nonempty.intro a
-/--
-    37.
--/
+                simp_all
+                exact ⟨a, True.intro⟩
 example : (∀ x, P x ∧ Q x) ↔ (∀ x, P x) ∧ (∀ x, Q x) := Iff.intro (
     fun f : ∀ x, P x ∧ Q x =>
         ⟨
@@ -879,9 +726,6 @@ example : (∀ x, P x ∧ Q x) ↔ (∀ x, P x) ∧ (∀ x, Q x) := by
     case mpr =>
         intro (f : (∀ (x : α), P x) ∧ ∀ (x : α), Q x) (x : α)
         simp_all only [and_self] -- (p ∧ p) = p
-/--
-    38.
--/
 example : (∀ x, P x → Q x) → (∀ x, P x) → (∀ x, Q x) :=
     fun h : ∀ x, P x → Q x =>
         fun f : ∀ x, P x =>
@@ -890,9 +734,6 @@ example : (∀ x, P x → Q x) → (∀ x, P x) → (∀ x, Q x) :=
 example : (∀ x, P x → Q x) → (∀ x, P x) → (∀ x, Q x) := by
     intro (_ : ∀ (x : α), P x → Q x) (_ : ∀ (x : α), P x) (_ : α)
     simp_all only [forall_const] -- (∀ (a : α), b) ↔ b
-/--
-    39.
--/
 example : (∀ x, P x) ∨ (∀ x, Q x) → ∀ x, P x ∨ Q x :=
     fun f : (∀ x, P x) ∨ (∀ x, Q x) =>
         match f with
@@ -909,9 +750,6 @@ example : (∀ x, P x) ∨ (∀ x, Q x) → ∀ x, P x ∨ Q x := by
             simp_all only [true_or]
         | inr _ =>
             simp_all only [or_true]
-/--
-    40.
--/
 example : α → ((∀ _ : α, R) ↔ R) :=
     fun x : α => Iff.intro
         (
@@ -932,9 +770,6 @@ example : α → ((∀ _ : α, R) ↔ R) := by
     case mpr =>
         intro (_ : R) (_ : α)
         simp_all only
-/--
-    41.
--/
 example : (∀ x, P x ∨ R) ↔ (∀ x, P x) ∨ R := Iff.intro
     (
         fun f => match Classical.em R with
@@ -979,9 +814,6 @@ example : (∀ x, P x ∨ R) ↔ (∀ x, P x) ∨ R := by
                 simp_all only [
                     or_true -- (p : Prop) : (p ∨ True) = True
                 ]
-/--
-    42.
--/
 example : (∀ x, R → P x) ↔ (R → ∀ x, P x) := Iff.intro
     (
         fun f : ∀ (x : α), R → P x =>
@@ -1002,15 +834,11 @@ example : (∀ x, R → P x) ↔ (R → ∀ x, P x) := by
     case mpr =>
         intro (_ : R → ∀ (x : α), P x) (_ : α) (_ : R)
         simp_all only [forall_const] -- (∀ (a : α), b) ↔ b
-/--
-    43.
--/
 example (μ : Type) (β : μ) (α : μ → μ → Prop) (h : ∀ x : μ, α β x ↔ ¬α x x) : False :=
     (fun a : (α β β) => ((h β).mp a) a) ((h β).mpr
     (fun a : (α β β) => ((h β).mp a) a))
 example (μ : Type) (β : μ) (α : μ → μ → Prop) (h : ∀ x : μ, α β x ↔ ¬α x x) : False := by
     have f := h β
-    by_contra!
     have f' : ¬α β β := by
         intro a
         exact (f.mp a) a

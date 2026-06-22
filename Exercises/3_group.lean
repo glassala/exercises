@@ -8,11 +8,15 @@ import Mathlib.Data.Finset.Defs
 import Mathlib.Algebra.Quotient
 set_option linter.style.docString false
 set_option linter.style.multiGoal false
---set_option diagnostics true
+
 /-
 
     An exercise in creating a custom implementation of groups
     to strengthen my knowledge of and intuition for groups (and Lean).
+    Still eccentric and still amateur, but more ambitious
+    than previous practice projects.
+
+
     From around December 2025.
 
     -- Will Sweet

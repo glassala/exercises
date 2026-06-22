@@ -1,3 +1,5 @@
 /.lake
-/.gitignore
+/.git
+/.github
+.gitignore
 /.editorconfig
